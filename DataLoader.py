@@ -16,7 +16,7 @@ with open('data/words.txt', 'r', encoding="utf-8") as f:
         line = line.split()
         phone[line[0]] = int(line[1])
         rephone[int(line[1])] = line[0]
-print (phone)
+#print (phone)
 
 # TODO move batch processing to each model
 def zero_pad_concat(inputs):
