@@ -10,7 +10,7 @@ import kaldi_io
 #        rephone[int(line[1])] = line[0]
 #print(phone)
 
-with open('data/words.txt', 'r') as f:
+with open('data/words.txt', 'r', encoding="utf-8") as f:
     phone = {}; rephone = {}
     for line in f:
         line = line.split()
