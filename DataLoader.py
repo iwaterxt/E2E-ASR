@@ -2,13 +2,21 @@ import sys
 import numpy as np
 import kaldi_io
 
-with open('data/lang/phones.txt', 'r') as f:
+#with open('data/lang/phones.txt', 'r') as f:
+#    phone = {}; rephone = {}
+#    for line in f:
+#        line = line.split()
+#        phone[line[0]] = int(line[1])
+#        rephone[int(line[1])] = line[0]
+#print(phone)
+
+with open('data/words.txt', 'r') as f:
     phone = {}; rephone = {}
     for line in f:
         line = line.split()
         phone[line[0]] = int(line[1])
         rephone[int(line[1])] = line[0]
-print(phone)
+print (phone)
 
 # TODO move batch processing to each model
 def zero_pad_concat(inputs):
