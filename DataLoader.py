@@ -49,7 +49,7 @@ class SequentialLoader:
  add-deltas --delta-order=2 ark:- ark:- | nnet-forward data/final.feature_transform ark:- ark:- |'.format(dtype, dtype, dtype)
         self.batch_size = batch_size
         # load label
-        with open('data/'+dtype+'/text', 'r') as f:
+        with open('data/'+dtype+'/text', 'r', encoding="utf-8") as f:
             for line in f:
                 line = line.split()
                 if attention: # insert start and end NOTE we use 0 as '<eos>', and '<sos>' is the last phone index
