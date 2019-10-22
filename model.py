@@ -180,6 +180,7 @@ class Transducer(nn.Module):
                 # sort B
                 # sorted(B, key=lambda a: a.logp, reverse=True)
                 y_hat = max(A, key=lambda a: a.logp)
+                print (B)
                 yb = max(B, key=lambda a: a.logp)
                 if len(B) >= W and yb.logp >= y_hat.logp: break
 
