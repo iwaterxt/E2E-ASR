@@ -161,9 +161,9 @@ class Transducer(nn.Module):
                 logp = F.log_softmax(ytu, dim=0) # log probability for each k
                 # TODO only use topk vocab
                 topk_ids = topk(logp, k=min(20, self.vocab_size))
-                sorted(topk_ids)
-                print (topk_ids)
-                for k in topk_ids:
+                topk_ids_sort = sorted(topk_ids)
+                print (topk_ids_sort)
+                for k in topk_ids_sort:
                     yk = Sequence(y_hat)
                     yk.logp += float(logp[k])
                     if k == self.blank:
