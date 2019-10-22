@@ -129,6 +129,7 @@ class Transducer(nn.Module):
         xs = self.encoder(xs)[0][0]
         B = [Sequence(blank=self.blank)]
         for i, x in enumerate(xs):
+            
             sorted(B, key=lambda a: len(a.k), reverse=True) # larger sequence first add
             A = B
             B = []
@@ -160,10 +161,9 @@ class Transducer(nn.Module):
                 ytu = self.joint(x, pred)
                 logp = F.log_softmax(ytu, dim=0) # log probability for each k
                 # TODO only use topk vocab
-                topk_ids = topk(logp, k=min(20, self.vocab_size))
-                topk_ids_sort = sorted(topk_ids)
-                print (topk_ids_sort)
-                for k in topk_ids_sort:
+                topk_ids = topk(logp[1:], k=min(19, self.vocab_size))
+                topk_ids.append(0)
+                for k in topk_ids:
                     yk = Sequence(y_hat)
                     yk.logp += float(logp[k])
                     if k == self.blank:
@@ -180,10 +180,8 @@ class Transducer(nn.Module):
                 # sort B
                 # sorted(B, key=lambda a: a.logp, reverse=True)
                 y_hat = max(A, key=lambda a: a.logp)
-                print (B)
                 yb = max(B, key=lambda a: a.logp)
                 if len(B) >= W and yb.logp >= y_hat.logp: break
-
             # beam width
             sorted(B, key=lambda a: a.logp, reverse=True)
             B = B[:W]
