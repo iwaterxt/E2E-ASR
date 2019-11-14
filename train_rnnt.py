@@ -125,9 +125,9 @@ def train():
                 logging.info('[Epoch %d Batch %d] loss %.2f'%(epoch, i, loss))
                 totloss = 0
 
-            if havling:
-                lr /= 2
-                adjust_learning_rate(optimizer, lr)
+        if havling:
+            lr /= 2
+            adjust_learning_rate(optimizer, lr)
 
         losses = sum(losses) / len(trainset)
         val_l = eval()
