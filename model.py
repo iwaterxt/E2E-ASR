@@ -174,12 +174,17 @@ class Transducer(nn.Module):
                 y_hat = max(A, key=lambda a: a.logp)
                 yb = max(B, key=lambda a: a.logp)
                 if len(B) >= W and yb.logp >= y_hat.logp: break
+
             # beam width
             sorted(B, key=lambda a: a.logp, reverse=True)
             B = B[:W]
 
         # return highest probability sequence
+<<<<<<< HEAD
         #print(B[0])
+=======
+        print(B[0])
+>>>>>>> d05b1daddc083444d4e79bc7f7f6ef0356e308d3
         return B[0].k, -B[0].logp
 
 
