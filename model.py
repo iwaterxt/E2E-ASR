@@ -67,6 +67,7 @@ class Transducer(nn.Module):
         zero = autograd.Variable(torch.zeros((ys.shape[0], 1)).long())
         if ys.is_cuda: zero = zero.cuda()
         ymat = torch.cat((zero, ys), dim=1)
+        del zero
         # forwoard pm
         ymat = self.embed(ymat)
         ymat, _ = self.decoder(ymat)
@@ -74,8 +75,13 @@ class Transducer(nn.Module):
         ymat = ymat.unsqueeze(dim=1)
         # expand 
         sz = [max(i, j) for i, j in zip(xs.size()[:-1], ymat.size()[:-1])]
-        xs = xs.expand(torch.Size(sz+[xs.shape[-1]])); ymat = ymat.expand(torch.Size(sz+[ymat.shape[-1]]))
+        xs = xs.expand(torch.Size(sz+[xs.shape[-1]])); 
+        ymat = ymat.expand(torch.Size(sz+[ymat.shape[-1]]))
         out = self.joint(xs, ymat)
+        del sz
+        del xs
+        del ymat
+
         if ys.is_cuda:
             xlen = xlen.cuda()
             ylen = ylen.cuda()

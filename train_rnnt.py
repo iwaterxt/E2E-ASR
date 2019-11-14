@@ -12,6 +12,7 @@ import kaldi_io
 from model import Transducer
 from DataLoader import SequentialLoader
 
+
 parser = argparse.ArgumentParser(description='PyTorch LSTM CTC Acoustic Model on TIMIT.')
 parser.add_argument('--lr', type=float, default=1e-3,
                     help='initial learning rate')
