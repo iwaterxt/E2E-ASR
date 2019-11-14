@@ -38,7 +38,7 @@ parser.add_argument('--initam', type=str, default='',
 parser.add_argument('--gradclip', default=False, action='store_true')
 parser.add_argument('--schedule', default=False, action='store_true')
 
-parser.add_argument('--resume', type=str, default=''
+parser.add_argument('--resume', type=str, default='',
                     help='Initial am parameters')
 args = parser.parse_args()
 
