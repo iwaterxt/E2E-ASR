@@ -1,7 +1,6 @@
 import copy
 import numpy as np
 import torch
-import heapq
 from torch import nn, autograd
 import torch.nn.functional as F
 from warprnnt_pytorch import RNNTLoss
@@ -109,11 +108,10 @@ class Transducer(nn.Module):
         use_gpu = xs.is_cuda
         def forward_step(label, hidden):
             ''' `label`: int '''
-            with torch.no_grad():
-                label = autograd.Variable(torch.LongTensor([label]), volatile=True).view(1,1)
-                if use_gpu: label = label.cuda()
-                label = self.embed(label)
-                pred, hidden = self.decoder(label, hidden)
+            label = autograd.Variable(torch.LongTensor([label]), volatile=True).view(1,1)
+            if use_gpu: label = label.cuda()
+            label = self.embed(label)
+            pred, hidden = self.decoder(label, hidden)
             return pred[0][0], hidden
 
         def isprefix(a, b):
@@ -122,14 +120,10 @@ class Transducer(nn.Module):
             for i in range(len(a)):
                 if a[i] != b[i]: return False
             return True
-        def topk(eout, k):
-            index = heapq.nlargest(k, range(len(eout)), eout.__getitem__)
-            return index
 
         xs = self.encoder(xs)[0][0]
         B = [Sequence(blank=self.blank)]
         for i, x in enumerate(xs):
-            
             sorted(B, key=lambda a: len(a.k), reverse=True) # larger sequence first add
             A = B
             B = []
@@ -161,9 +155,7 @@ class Transducer(nn.Module):
                 ytu = self.joint(x, pred)
                 logp = F.log_softmax(ytu, dim=0) # log probability for each k
                 # TODO only use topk vocab
-                topk_ids = topk(logp[1:], k=min(19, self.vocab_size))
-                topk_ids.append(0)
-                for k in topk_ids:
+                for k in range(self.vocab_size):
                     yk = Sequence(y_hat)
                     yk.logp += float(logp[k])
                     if k == self.blank:
@@ -182,12 +174,13 @@ class Transducer(nn.Module):
                 y_hat = max(A, key=lambda a: a.logp)
                 yb = max(B, key=lambda a: a.logp)
                 if len(B) >= W and yb.logp >= y_hat.logp: break
+
             # beam width
             sorted(B, key=lambda a: a.logp, reverse=True)
             B = B[:W]
 
         # return highest probability sequence
-        #print(B[0].encode('utf-8'))
+        print(B[0])
         return B[0].k, -B[0].logp
 
 

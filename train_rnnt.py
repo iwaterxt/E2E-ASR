@@ -88,6 +88,7 @@ def train():
 
     prev_loss = 1000
     best_model = None
+    havling = 0
     lr = args.lr
     for epoch in range(1, args.epochs):
         totloss = 0; losses = []
@@ -96,13 +97,17 @@ def train():
             xs = Variable(torch.FloatTensor(xs)).cuda()
             if args.noise: add_noise(xs)
             ys = Variable(torch.LongTensor(ys)).cuda()
-            xlen = Variable(torch.IntTensor(xlen)); ylen = Variable(torch.IntTensor(ylen))
+            xlen = Variable(torch.IntTensor(xlen)); 
+            ylen = Variable(torch.IntTensor(ylen))
             model.train()
             optimizer.zero_grad()
             loss = model(xs, ys, xlen, ylen)
+            del xs
+            del ys
             loss.backward()
             loss = float(loss.data) * len(xlen)
-            totloss += loss; losses.append(loss)
+            totloss += loss; 
+            losses.append(loss)
             if args.gradclip: grad_norm = nn.utils.clip_grad_norm(model.parameters(), 200)
             optimizer.step()
 
@@ -111,6 +116,10 @@ def train():
                 loss = totloss / args.batch_size / args.log_interval
                 logging.info('[Epoch %d Batch %d] loss %.2f'%(epoch, i, loss))
                 totloss = 0
+
+            if havling:
+                lr /= 2
+                adjust_learning_rate(optimizer, lr)
 
         losses = sum(losses) / len(trainset)
         val_l = eval()
@@ -123,6 +132,7 @@ def train():
             best_model = '{}/params_epoch{:02d}_tr{:.2f}_cv{:.2f}'.format(args.out, epoch, losses, val_l)
             torch.save(model.state_dict(), best_model)
         else:
+            havling = 1
             torch.save(model.state_dict(), '{}/params_epoch{:02d}_tr{:.2f}_cv{:.2f}_rejected'.format(args.out, epoch, losses, val_l))
             model.load_state_dict(torch.load(best_model))
             if args.cuda: model.cuda()
