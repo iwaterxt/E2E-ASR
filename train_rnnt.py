@@ -38,7 +38,8 @@ parser.add_argument('--initam', type=str, default='',
 parser.add_argument('--gradclip', default=False, action='store_true')
 parser.add_argument('--schedule', default=False, action='store_true')
 
-parser.add_argument('--resume', type=str, action='store_true')
+parser.add_argument('--resume', type=str, default=''
+                    help='Initial am parameters')
 args = parser.parse_args()
 
 os.makedirs(args.out, exist_ok=True)
@@ -92,7 +93,7 @@ def train():
     best_model = None
     havling = 0
     lr = args.lr
-    if args.resume:
+    if args.resume !='':
         model.load_state_dict(torch.load(args.resume))
         if args.cuda: model.cuda()
 
