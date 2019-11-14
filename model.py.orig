@@ -146,6 +146,7 @@ class Transducer(nn.Module):
                         A[j].logp = log_aplusb(A[j].logp, curlogp)
 
             while True:
+                print ("iter again")
                 y_hat = max(A, key=lambda a: a.logp)
                 # y* = most probable in A
                 A.remove(y_hat)
@@ -174,6 +175,7 @@ class Transducer(nn.Module):
                 y_hat = max(A, key=lambda a: a.logp)
                 yb = max(B, key=lambda a: a.logp)
                 if len(B) >= W and yb.logp >= y_hat.logp: break
+            print ("------------------")
             # beam width
             sorted(B, key=lambda a: a.logp, reverse=True)
             B = B[:W]

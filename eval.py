@@ -22,7 +22,7 @@ parser.add_argument('--dataset', default='test', help='decoding data set')
 parser.add_argument('--out', type=str, default='', help='decoded result output dir')
 args = parser.parse_args()
 
-logdir = args.out if args.out else os.path.dirname(args.model) + '/decode.log'
+logdir = args.out if args.out else os.path.dirname(args.model) + '/decode_13.log'
 # if args.out: os.makedirs(args.out, exist_ok=True)
 logging.basicConfig(format='%(asctime)s: %(message)s', datefmt="%H:%M:%S", filename=logdir, level=logging.INFO)
 # Load model
